@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>American Debt Relief - Operator Chat</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    a {
+      color: white
+    }
+
+    #header {
+      background-color: white;
+      color: #4b5563;
+      padding: 20px;
+      text-align: center;
+      font-size: 1.3em;
+      font-weight: bold;
+      font-family: "ui-serif";
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .text-red {
+      color: #ee0000;
+    }
+
+    #header .details {
+      margin-top: 10px;
+      font-size: 0.9em;
+    }
+    
+    .operator-container {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-weight: 100;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      max-width: 600px;
+      margin: 0 auto;
+      font-size: 0.7em;
+      margin-top: 10px;
+      justify-content: center;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);  /* Original size */
+      }
+      50% {
+        transform: scale(1.6);  /* Slightly bigger */
+      }
+      100% {
+        transform: scale(1);  /* Return to original size */
+      }
+    }
+
+    .online {
+      width: 8px;
+      height: 8px;
+      background-color: #22bb22;
+      border-radius: 50%;   /* Makes the shape circular */
+      animation: pulse 2s infinite ease-in-out;  /* Apply pulsing animation */
+      margin-right: 8px;
+    }
+
+    #chat-container {
+      flex-grow: 1;
+      /* overflow-y: auto; */
+      padding: 15px;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      scroll-behavior: smooth;
+    }
+
+    .message {
+      margin-bottom: 10px;
+      max-width: 80%;
+      word-wrap: break-word;
+      font-size: 0.9em;
+      opacity: 0; /* Start messages with opacity 0 for fade-in animation */
+      animation: fadeIn 0.6s forwards; /* Apply fade-in animation */
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .operator, .typing {
+      background-color: #e5e5e5;
+      color: #000;
+      padding: 8px 15px;
+      border-radius: 20px;
+      align-self: flex-start;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      font-size: 1.0em;
+      opacity: 0;
+      animation: fadeIn 0.6s forwards;
+    }
+
+    .user {
+      background-color: #34b7f1;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      align-self: flex-end;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      font-size: 1.0em;
+    }
+
+    .call {
+      background-color: rgb(59 130 246);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      align-self: flex-start;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      font-size: 1.0em;
+    }
+
+    .error {
+      background-color: #ee0000;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      align-self: flex-start;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+      font-size: 1.0em;
+    }
+
+    @keyframes blink {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .typing::before {
+      display: flex;  /* Aligns children in a row */
+      justify-content: center;  /* Optional: Center the circles horizontally */
+    }
+
+    .circle {
+      width: 6px;
+      height: 6px;
+      background-color: grey;
+      border-radius: 50%;
+      margin-right: 2px;
+      margin-left: 2px;
+      animation: blink 1s infinite;
+      display: inline-block;  /* Aligns circles in a single line */
+    }
+
+    .answer-buttons {
+      display: flex;
+      flex-direction: column;
+      margin-top: 10px;
+      padding: 15px;
+    }
+
+    .answer-button {
+      background-color: #0088cc;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-bottom: 8px;
+      font-size: 0.9em;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .answer-button:hover {
+      background-color: #0077b3;
+      transform: scale(1.05); /* Slightly scale the button when hovered */
+    }
+
+    .message-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .locked {
+      pointer-events: none;
+    }
+
+    /* Add a smooth transition to scroll */
+    #chat-container {
+      scroll-behavior: smooth;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="header">
+    <span class="text-red">Atención:</span> El programa termina pronto
+
+    <div class="details">Nuevo plan de reducción de deuda para hispanos,
+      los estadounidenses que califican reciben una reducir promedio de deuda de $27,352. <span class="text-red">(Vence el 19 de febrero de 2025 a la Medianoche)</span>
+    </div>
+    <div class="operator-container">
+      <div class="online">
+      </div>
+        <div class="operator-name"> Emily está en línea</div>
+      </div>
+
+  </div>
+  
+  <div id="chat-container">
+    <div class="message-container" id="chat-container"></div>
+  </div>
+  
+  <div id="answer-buttons" class="answer-buttons"></div>
+
+  <script>
+    function scrollToBottom() {
+      window.scroll({
+        top: document.body.scrollHeight,
+        behavior: 'smooth'  // Optional: Adds smooth scrolling
+      });
+    }
+
+    // Define the messages array
+
+    class Answer {
+      constructor(text, isPositive) {
+        this.text = text;
+        this.isPositive = isPositive;
+      }
+    }
+
+    const messages = [
+      {
+        operator_message: "Hola 👋",
+        user_answer: null
+      },
+      {
+        operator_message: "Soy Olivia y estoy aquí para ayudarte a reducir tus deudas.",
+        user_answer: null
+      },
+      {
+        operator_message: "¿Quiere saber si califica para $15,000 o más en alivio de deudas de tarjetas de crédito? Toca ¡Sí! 😃",
+        user_answer: [new Answer("Si", true)]
+      },
+      {
+        operator_message: "De acuerdo, déjame hacerte dos preguntas rápidas",
+        user_answer: null
+      },
+      {
+        operator_message: "¿Tienes más de $15,000 en deuda de tarjetas de crédito? Toca Sí o No",
+        user_answer: [new Answer("Si", true), new Answer("No", false)]
+      },
+      {
+        operator_message: "¿Te gustaría reducir tu deuda hoy mismo?",
+        user_answer: [new Answer("Si", true), new Answer("No", false)]
+      },
+      {
+        operator_message: "🎉¡Felicidades!🎁",
+        user_answer: null // Empty user answer array
+      },
+      {
+        operator_message: "Estás precalificado para obtener hasta $50,000 o más en alivio de deudas.",
+        user_answer: null // Empty user answer array
+      },
+      {
+        operator_message: "Puedes utilizar esto para evitar pagar deudas vencidas de tarjetas de crédito, facturas médicas, préstamos personales y más…",
+        user_answer: null // Empty user answer array
+      },
+      {
+        operator_message: "Toque el botón con el número a continuación para llamar ahora y obtener hasta $50,000 en Alivio de Deudas, solo toma 2 minutos.",
+        user_answer: null // Empty user answer array
+      }      
+    ];
+
+    let currentMessageIndex = 0;
+
+    function displayMessage(content, sender) {
+      if (sender == "call") {
+        const messageDiv = document.createElement("div");
+        messageDiv.classList.add("message", sender);
+
+        var link = document.createElement('a');
+        link.href = 'tel:' + content;
+        link.textContent = content;
+
+        messageDiv.appendChild(link);
+
+        document.getElementById("chat-container").appendChild(messageDiv);
+        document.getElementById("chat-container").scrollTop = document.getElementById("chat-container").scrollHeight;
+        scrollToBottom()
+        return
+      }
+
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("message", sender);
+      messageDiv.textContent = content;
+      document.getElementById("chat-container").appendChild(messageDiv);
+      document.getElementById("chat-container").scrollTop = document.getElementById("chat-container").scrollHeight;
+      scrollToBottom();
+    }
+
+    function showOperatorMessage() {
+      const message = messages[currentMessageIndex];
+      if (message.operator_message) {
+        const operatorMessageDiv = document.createElement("div");
+        operatorMessageDiv.classList.add("message", "operator", "typing");
+
+        const circleDiv = document.createElement("div");
+        circleDiv.classList.add("circle");
+
+        const circleDiv1 = document.createElement("div");
+        circleDiv1.classList.add("circle");
+
+        const circleDiv2 = document.createElement("div");
+        circleDiv2.classList.add("circle");
+
+        operatorMessageDiv.appendChild(circleDiv)
+        operatorMessageDiv.appendChild(circleDiv1)
+        operatorMessageDiv.appendChild(circleDiv2)
+
+        document.getElementById("chat-container").appendChild(operatorMessageDiv);
+
+        // Disable buttons while the operator is typing
+        disableAnswerButtons();
+        scrollToBottom();
+
+        setTimeout(() => {
+          operatorMessageDiv.textContent = message.operator_message;
+          if (message.user_answer && message.user_answer.length > 0) {
+            displayAnswerButtons(message.user_answer);
+            operatorMessageDiv.classList.remove("typing")
+            scrollToBottom();
+          } else {
+            operatorMessageDiv.classList.remove("typing");
+            proceedToNextMessage();
+            scrollToBottom();
+          }
+        }, Math.random() * 1000 + 1000); // random delay between 1500ms and 2500ms
+      }
+    }
+
+    function displayAnswerButtons(answers) {
+      const answerButtonsContainer = document.getElementById("answer-buttons");
+
+      answers.forEach(answer => {
+        const button = document.createElement("button");
+        button.classList.add("answer-button");
+        button.textContent = answer.text;
+        button.onclick = () => handleUserResponse(answer);
+        answerButtonsContainer.appendChild(button);
+      });
+
+      // Enable buttons after operator's message is shown
+      enableAnswerButtons();
+    }
+
+    function handleUserResponse(response) {
+      displayMessage(response.text, "user");
+
+      if (!response.isPositive) {
+        displayMessage("Desafortunadamente, usted no califica para la Liquidación de Deudas.", "error");
+        return
+      }
+
+      proceedToNextMessage();
+
+      const answerButtonsContainer = document.getElementById("answer-buttons");
+      while (answerButtonsContainer.firstChild) {
+        answerButtonsContainer.removeChild(answerButtonsContainer.firstChild);
+      }
+    }
+
+    function proceedToNextMessage() {
+      currentMessageIndex++;
+      if (currentMessageIndex < messages.length) {
+        setTimeout(showOperatorMessage, 500);
+      } else {
+        displayMessage("(866) 227-2127", "call");
+      }
+    }
+
+    function disableAnswerButtons() {
+      const answerButtonsContainer = document.getElementById("answer-buttons");
+      answerButtonsContainer.classList.add('locked'); // Lock the entire button container
+    }
+
+    function enableAnswerButtons() {
+      const answerButtonsContainer = document.getElementById("answer-buttons");
+      answerButtonsContainer.classList.remove('locked'); // Unlock the entire button container
+    }
+
+    // Start the chat with the first operator message
+    setTimeout(showOperatorMessage, 500);
+  </script>
+  
+</body>
+</html>
