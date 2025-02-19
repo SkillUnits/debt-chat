@@ -215,22 +215,39 @@
     }
 
   </style>
+
+    <script>
+        (function (w,d,s,o,f,js,fjs) { w[o] = w[o] || function () { (w[o].q = w[o].q || []).push(arguments) }; js = d.createElement(s), fjs = d.getElementsByTagName(s)[0]; js.id = o; js.src = f; js.async = 1; fjs.parentNode.insertBefore(js, fjs);}(window, document, 'script', 'mcc', 'https://marketcall.com/js/mc-calltracking.js'));
+        
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        var newsbreak_cid = url.searchParams.get("newsbreak_cid");
+
+        mcc('init', { site: 694, serviceBaseUrl: '//www.marketcall.com' });
+        mcc('requestTrackingNumber', {campaign:"309828",selector:[{type:"dom",value:"a[href^='tel:']"}],mask:"+x (xxx) xxx-xx-xx",subid:"{subid}",subid1:"{tc_id}",subid2:newsbreak_cid});
+        </script>
+        <!-- Phone calls validation code -->
+        <!-- Install the code on all pages of your site -->
+        <script
+        id="__tc_script"
+        src="https://static.truecall.com/truecall.js"
+        data-campaign_uuid="06dqfudjo6fbl031kkou8z1762qzz1ds7hme"
+        data-skip_injection="true"
+        >
+    </script>
 </head>
 <body>
 
-  <div id="header">
-    <span class="text-red">Atención:</span> El programa termina pronto
-
-    <div class="details">Nuevo plan de reducción de deuda para hispanos,
-      los estadounidenses que califican reciben una reducir promedio de deuda de $27,352. <span class="text-red">(Vence el 03 de marzo de 2025 a la Medianoche)</span>
+    <div id="header">
+        <span class="text-red">Attention:</span> The program ends soon
+        <div class="details">New debt reduction plan for Americans.
+            Qualified Americans receive an average debt reduction of $27,352. <span class="text-red">(Expires on March 03, 2025, at Midnight)</span>
+        </div>
+        <div class="operator-container">
+            <div class="online"></div>
+            <div class="operator-name">Olivia is online</div>
+        </div>
     </div>
-    <div class="operator-container">
-      <div class="online">
-      </div>
-        <div class="operator-name"> Emily está en línea</div>
-      </div>
-
-  </div>
   
   <div id="chat-container">
     <div class="message-container" id="chat-container"></div>
@@ -256,46 +273,16 @@
     }
 
     const messages = [
-      {
-        operator_message: "Hola 👋",
-        user_answer: null
-      },
-      {
-        operator_message: "Soy Olivia y estoy aquí para ayudarte a reducir tus deudas.",
-        user_answer: null
-      },
-      {
-        operator_message: "¿Quiere saber si califica para $15,000 o más en alivio de deudas de tarjetas de crédito? Toca ¡Sí! 😃",
-        user_answer: [new Answer("Si", true)]
-      },
-      {
-        operator_message: "De acuerdo, déjame hacerte dos preguntas rápidas",
-        user_answer: null
-      },
-      {
-        operator_message: "¿Tienes más de $15,000 en deuda de tarjetas de crédito? Toca Sí o No",
-        user_answer: [new Answer("Si", true), new Answer("No", false)]
-      },
-      {
-        operator_message: "¿Te gustaría reducir tu deuda hoy mismo?",
-        user_answer: [new Answer("Si", true), new Answer("No", false)]
-      },
-      {
-        operator_message: "🎉¡Felicidades!🎁",
-        user_answer: null // Empty user answer array
-      },
-      {
-        operator_message: "Estás precalificado para obtener hasta $50,000 o más en alivio de deudas.",
-        user_answer: null // Empty user answer array
-      },
-      {
-        operator_message: "Puedes utilizar esto para evitar pagar deudas vencidas de tarjetas de crédito, facturas médicas, préstamos personales y más…",
-        user_answer: null // Empty user answer array
-      },
-      {
-        operator_message: "Toque el botón con el número a continuación para llamar ahora y obtener hasta $50,000 en Alivio de Deudas, solo toma 2 minutos.",
-        user_answer: null // Empty user answer array
-      }      
+      { operator_message: "Hello 👋", user_answer: null },
+      { operator_message: "I’m Olivia, and I’m here to help you reduce your debts.", user_answer: null },
+      { operator_message: "Do you want to know if you qualify for $15,000 or more in credit card debt relief? Tap Yes! 😃", user_answer: [new Answer("Yes", true)] },
+      { operator_message: "Alright, let me ask you two quick questions.", user_answer: null },
+      { operator_message: "Do you have more than $15,000 in credit card debt? Tap Yes or No", user_answer: [new Answer("Yes", true), new Answer("No", false)] },
+      { operator_message: "Would you like to reduce your debt today?", user_answer: [new Answer("Yes", true), new Answer("No", false)] },
+      { operator_message: "🎉 Congratulations! 🎁", user_answer: null },
+      { operator_message: "You are prequalified to receive up to $50,000 or more in debt relief.", user_answer: null },
+      { operator_message: "You can use this to avoid paying overdue credit card debts, medical bills, personal loans, and more…", user_answer: null },
+      { operator_message: "Tap the button with the number below to call now and get up to $50,000 in Debt Relief. It only takes 2 minutes.", user_answer: null }
     ];
 
     let currentMessageIndex = 0;
@@ -401,7 +388,7 @@
       if (currentMessageIndex < messages.length) {
         setTimeout(showOperatorMessage, 500);
       } else {
-        displayMessage("(866) 227-2127", "call");
+        displayMessage("(888) 217-3304", "call");
       }
     }
 
