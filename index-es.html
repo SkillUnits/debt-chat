@@ -1,443 +1,532 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>American Debt Relief - Operator Chat</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f7f7f7;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-    }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>American Debt Relief - Operator Chat</title>
+        <style>
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f7f7f7;
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
 
-    a {
-      color: white
-    }
+            a {
+                color: white;
+            }
 
-    #header {
-      background-color: white;
-      color: #4b5563;
-      padding: 20px;
-      text-align: center;
-      font-size: 1.3em;
-      font-weight: bold;
-      font-family: "ui-serif";
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
+            #header {
+                background-color: white;
+                color: #4b5563;
+                padding: 20px;
+                text-align: center;
+                font-size: 1.3em;
+                font-weight: bold;
+                font-family: "ui-serif";
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
 
-    .text-red {
-      color: #ee0000;
-    }
+            .text-red {
+                color: #ee0000;
+            }
 
-    #header .details {
-      margin-top: 10px;
-      font-size: 0.9em;
-    }
-    
-    .operator-container {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      font-weight: 100;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      max-width: 600px;
-      margin: 0 auto;
-      font-size: 0.7em;
-      margin-top: 10px;
-      justify-content: center;
-    }
+            #header .details {
+                margin-top: 10px;
+                font-size: 0.9em;
+            }
 
-    @keyframes pulse {
-      0% {
-        transform: scale(1);  /* Original size */
-      }
-      50% {
-        transform: scale(1.6);  /* Slightly bigger */
-      }
-      100% {
-        transform: scale(1);  /* Return to original size */
-      }
-    }
+            .operator-container {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                font-weight: 100;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                max-width: 600px;
+                margin: 0 auto;
+                font-size: 0.7em;
+                margin-top: 10px;
+                justify-content: center;
+            }
 
-    .online {
-      width: 8px;
-      height: 8px;
-      background-color: #22bb22;
-      border-radius: 50%;   /* Makes the shape circular */
-      animation: pulse 2s infinite ease-in-out;  /* Apply pulsing animation */
-      margin-right: 8px;
-    }
+            @keyframes pulse {
+                0% {
+                    transform: scale(1); /* Original size */
+                }
+                50% {
+                    transform: scale(1.6); /* Slightly bigger */
+                }
+                100% {
+                    transform: scale(1); /* Return to original size */
+                }
+            }
 
-    #chat-container {
-      flex-grow: 1;
-      /* overflow-y: auto; */
-      padding: 15px;
-      background-color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      scroll-behavior: smooth;
-    }
+            .online {
+                width: 8px;
+                height: 8px;
+                background-color: #22bb22;
+                border-radius: 50%; /* Makes the shape circular */
+                animation: pulse 2s infinite ease-in-out; /* Apply pulsing animation */
+                margin-right: 8px;
+            }
 
-    .message {
-      margin-bottom: 10px;
-      max-width: 80%;
-      word-wrap: break-word;
-      font-size: 0.9em;
-      opacity: 0; /* Start messages with opacity 0 for fade-in animation */
-      animation: fadeIn 0.6s forwards; /* Apply fade-in animation */
-    }
+            #chat-container {
+                flex-grow: 1;
+                /* overflow-y: auto; */
+                padding: 15px;
+                background-color: #ffffff;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-end;
+                scroll-behavior: smooth;
+            }
 
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
-    }
+            .message {
+                margin-bottom: 10px;
+                max-width: 80%;
+                word-wrap: break-word;
+                font-size: 0.9em;
+                opacity: 0; /* Start messages with opacity 0 for fade-in animation */
+                animation: fadeIn 0.6s forwards; /* Apply fade-in animation */
+            }
 
-    .operator, .typing {
-      background-color: #e5e5e5;
-      color: #000;
-      padding: 8px 15px;
-      border-radius: 20px;
-      align-self: flex-start;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-      font-size: 1.0em;
-      opacity: 0;
-      animation: fadeIn 0.6s forwards;
-    }
+            @keyframes fadeIn {
+                0% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
 
-    .user {
-      background-color: #34b7f1;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      align-self: flex-end;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-      font-size: 1.0em;
-    }
+            .operator,
+            .typing {
+                background-color: #e5e5e5;
+                color: #000;
+                padding: 8px 15px;
+                border-radius: 20px;
+                align-self: flex-start;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+                font-size: 1em;
+                opacity: 0;
+                animation: fadeIn 0.6s forwards;
+            }
 
-    .call {
-      background-color: rgb(59 130 246);
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      align-self: flex-start;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-      font-size: 1.0em;
-    }
+            .user {
+                background-color: #34b7f1;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 20px;
+                align-self: flex-end;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+                font-size: 1em;
+            }
 
-    .error {
-      background-color: #ee0000;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      align-self: flex-start;
-      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-      font-size: 1.0em;
-    }
+            .call {
+                background-color: rgb(59 130 246);
+                color: white;
+                padding: 8px 15px;
+                border-radius: 20px;
+                align-self: flex-start;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+                font-size: 1em;
+            }
 
-    @keyframes blink {
-      0% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0;
-      }
-      100% {
-        opacity: 1;
-      }
-    }
+            .error {
+                background-color: #ee0000;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 20px;
+                align-self: flex-start;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+                font-size: 1em;
+            }
 
-    .typing::before {
-      display: flex;  /* Aligns children in a row */
-      justify-content: center;  /* Optional: Center the circles horizontally */
-    }
+            @keyframes blink {
+                0% {
+                    opacity: 1;
+                }
+                50% {
+                    opacity: 0;
+                }
+                100% {
+                    opacity: 1;
+                }
+            }
 
-    .circle {
-      width: 6px;
-      height: 6px;
-      background-color: grey;
-      border-radius: 50%;
-      margin-right: 2px;
-      margin-left: 2px;
-      animation: blink 1s infinite;
-      display: inline-block;  /* Aligns circles in a single line */
-    }
+            .typing::before {
+                display: flex; /* Aligns children in a row */
+                justify-content: center; /* Optional: Center the circles horizontally */
+            }
 
-    .answer-buttons {
-      display: flex;
-      flex-direction: column;
-      margin-top: 10px;
-      padding: 15px;
-    }
+            .circle {
+                width: 6px;
+                height: 6px;
+                background-color: grey;
+                border-radius: 50%;
+                margin-right: 2px;
+                margin-left: 2px;
+                animation: blink 1s infinite;
+                display: inline-block; /* Aligns circles in a single line */
+            }
 
-    .answer-button {
-      background-color: #0088cc;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 20px;
-      cursor: pointer;
-      margin-bottom: 8px;
-      font-size: 0.9em;
-      transition: background-color 0.3s, transform 0.2s;
-    }
+            .answer-buttons {
+                display: flex;
+                flex-direction: column;
+                margin-top: 10px;
+                padding: 15px;
+            }
 
-    .answer-button:hover {
-      background-color: #0077b3;
-      transform: scale(1.05); /* Slightly scale the button when hovered */
-    }
+            .answer-button {
+                background-color: #0088cc;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 20px;
+                cursor: pointer;
+                margin-bottom: 8px;
+                font-size: 0.9em;
+                transition: background-color 0.3s, transform 0.2s;
+            }
 
-    .message-container {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      max-width: 600px;
-      margin: 0 auto;
-    }
+            .answer-button:hover {
+                background-color: #0077b3;
+                transform: scale(
+                    1.05
+                ); /* Slightly scale the button when hovered */
+            }
 
-    .disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
+            .message-container {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                max-width: 600px;
+                margin: 0 auto;
+            }
 
-    .locked {
-      pointer-events: none;
-    }
+            .disabled {
+                background-color: #ccc;
+                cursor: not-allowed;
+            }
 
-    /* Add a smooth transition to scroll */
-    #chat-container {
-      scroll-behavior: smooth;
-    }
+            .locked {
+                pointer-events: none;
+            }
 
-  </style>
+            /* Add a smooth transition to scroll */
+            #chat-container {
+                scroll-behavior: smooth;
+            }
+        </style>
 
-  <script>
-    (function (w,d,s,o,f,js,fjs) { w[o] = w[o] || function () { (w[o].q = w[o].q || []).push(arguments) }; js = d.createElement(s), fjs = d.getElementsByTagName(s)[0]; js.id = o; js.src = f; js.async = 1; fjs.parentNode.insertBefore(js, fjs);}(window, document, 'script', 'mcc', 'https://marketcall.com/js/mc-calltracking.js'));
-    
-    var url_string = window.location.href;
-    var url = new URL(url_string);
-    var newsbreak_cid = url.searchParams.get("newsbreak_cid");
+        <script>
+            (function (w, d, s, o, f, js, fjs) {
+                w[o] =
+                    w[o] ||
+                    function () {
+                        (w[o].q = w[o].q || []).push(arguments);
+                    };
+                (js = d.createElement(s)), (fjs = d.getElementsByTagName(s)[0]);
+                js.id = o;
+                js.src = f;
+                js.async = 1;
+                fjs.parentNode.insertBefore(js, fjs);
+            })(
+                window,
+                document,
+                "script",
+                "mcc",
+                "https://marketcall.com/js/mc-calltracking.js"
+            );
 
-    mcc('init', { site: 816, serviceBaseUrl: '//www.marketcall.com' });
-    mcc('requestTrackingNumber', {campaign:"309828",selector:[{type:"dom",value:"a[href^='tel:']"}],mask:"+x (xxx) xxx-xx-xx",subid:"{subid}",subid1:"{tc_id}",subid2:newsbreak_cid});
-    </script>
-    <!-- Phone calls validation code -->
-    <!-- Install the code on all pages of your site -->
-    <script
-    id="__tc_script"
-    src="https://static.truecall.com/truecall.js"
-    data-campaign_uuid="06dqfudjo6fbl031kkou8z1762qzz1ds7hme"
-    data-skip_injection="true"
-    >
-  </script>
-</head>
-<body>
+            var url_string = window.location.href;
+            var url = new URL(url_string);
+            var newsbreak_cid = url.searchParams.get("newsbreak_cid");
 
-  <div id="header">
-    <span class="text-red">Atención:</span> El programa termina pronto
+            mcc("init", { site: 816, serviceBaseUrl: "//www.marketcall.com" });
+            mcc("requestTrackingNumber", {
+                campaign: "309828",
+                selector: [{ type: "dom", value: "a[href^='tel:']" }],
+                mask: "+x (xxx) xxx-xx-xx",
+                subid: "{subid}",
+                subid1: "{tc_id}",
+                subid2: newsbreak_cid,
+            });
+        </script>
+        <!-- Phone calls validation code -->
+        <!-- Install the code on all pages of your site -->
+        <script
+            id="__tc_script"
+            src="https://static.truecall.com/truecall.js"
+            data-campaign_uuid="06dqfudjo6fbl031kkou8z1762qzz1ds7hme"
+            data-skip_injection="true"
+        ></script>
+    </head>
+    <body>
+        <div id="header">
+            <span class="text-red">Atención:</span> El programa termina pronto
 
-    <div class="details">Nuevo plan de reducción de deuda para hispanos,
-      los estadounidenses que califican reciben una reducir promedio de deuda de $27,352. <span class="text-red">(Vence el 03 de marzo de 2025 a la Medianoche)</span>
-    </div>
-    <div class="operator-container">
-      <div class="online">
-      </div>
-        <div class="operator-name"> Emily está en línea</div>
-      </div>
+            <div class="details">
+                Nuevo plan de reducción de deuda para hispanos, los
+                estadounidenses que califican reciben una reducir promedio de
+                deuda de $27,352.
+                <span class="text-red"
+                    >(Vence el 03 de marzo de 2025 a la Medianoche)</span
+                >
+            </div>
+            <div class="operator-container">
+                <div class="online"></div>
+                <div class="operator-name">Emily está en línea</div>
+            </div>
+        </div>
 
-  </div>
-  
-  <div id="chat-container">
-    <div class="message-container" id="chat-container"></div>
-  </div>
-  
-  <div id="answer-buttons" class="answer-buttons"></div>
+        <div id="chat-container">
+            <div class="message-container" id="chat-container"></div>
+        </div>
 
-  <script>
-    function scrollToBottom() {
-      window.scroll({
-        top: document.body.scrollHeight,
-        behavior: 'smooth'  // Optional: Adds smooth scrolling
-      });
-    }
+        <div id="answer-buttons" class="answer-buttons"></div>
 
-    // Define the messages array
+        <script>
+            function scrollToBottom() {
+                window.scroll({
+                    top: document.body.scrollHeight,
+                    behavior: "smooth", // Optional: Adds smooth scrolling
+                });
+            }
 
-    class Answer {
-      constructor(text, isPositive) {
-        this.text = text;
-        this.isPositive = isPositive;
-      }
-    }
+            // Define the messages array
 
-    const messages = [
-      {
-        operator_message: "Hola 👋",
-        user_answer: null
-      },
-      {
-        operator_message: "Soy Olivia y estoy aquí para ayudarte a reducir tus deudas.",
-        user_answer: null
-      },
-      {
-        operator_message: "¿Quiere saber si califica para $15,000 o más en alivio de deudas de tarjetas de crédito? Toca ¡Sí! 😃",
-        user_answer: [new Answer("Si", true)]
-      },
-      {
-        operator_message: "De acuerdo, déjame hacerte dos preguntas rápidas",
-        user_answer: null
-      },
-      {
-        operator_message: "¿Tienes más de $15,000 en deuda de tarjetas de crédito? Toca Sí o No",
-        user_answer: [new Answer("Si", true), new Answer("No", false)]
-      },
-      {
-        operator_message: "¿Te gustaría reducir tu deuda hoy mismo?",
-        user_answer: [new Answer("Si", true), new Answer("No", false)]
-      },
-      {
-        operator_message: "🎉¡Felicidades!🎁",
-        user_answer: null // Empty user answer array
-      },
-      {
-        operator_message: "Estás precalificado para obtener hasta $50,000 o más en alivio de deudas.",
-        user_answer: null // Empty user answer array
-      },
-      {
-        operator_message: "Puedes utilizar esto para evitar pagar deudas vencidas de tarjetas de crédito, facturas médicas, préstamos personales y más…",
-        user_answer: null // Empty user answer array
-      },
-      {
-        operator_message: "Toque el botón con el número a continuación para llamar ahora y obtener hasta $50,000 en Alivio de Deudas, solo toma 2 minutos.",
-        user_answer: null // Empty user answer array
-      }      
-    ];
+            class Answer {
+                constructor(text, isPositive) {
+                    this.text = text;
+                    this.isPositive = isPositive;
+                }
+            }
 
-    let currentMessageIndex = 0;
+            const messages = [
+                { operator_message: "Hola 👋", user_answer: null },
+                {
+                    operator_message:
+                        "Soy Emily y estoy aquí para ayudarte a reducir tus deudas.",
+                    user_answer: null,
+                },
+                {
+                    operator_message:
+                        "Tu puntaje de crédito puede bajar aún más si tu deuda sigue creciendo.",
+                    user_answer: null,
+                },
+                {
+                    operator_message:
+                        "Podemos ayudarte a encontrar una solución para evitar problemas financieros.",
+                    user_answer: null,
+                },
+                {
+                    operator_message:
+                        "¿Quieres proteger tu historial crediticio y aprender a reducir tu deuda?",
+                    user_answer: [
+                        new Answer("Sí, ¿cómo funciona?", true),
+                        new Answer("No, no estoy interesado", true),
+                    ],
+                },
+                {
+                    operator_message:
+                        "¡Esta oportunidad puede no volver! ¿Estás seguro de que no quieres revisar tus opciones?",
+                    user_answer: [
+                        new Answer("De acuerdo, quiero saber más", true),
+                        new Answer("Sí, no estoy interesado", false),
+                    ],
+                },
+                {
+                    operator_message:
+                        "Selecciona el monto de tu deuda y te mostraremos cuánto podrías ahorrar.",
+                    user_answer: [
+                        new Answer("$15,000 - $25,000", true),
+                        new Answer("$25,000 - $40,000", true),
+                        new Answer("Más de $40,000", true),
+                    ],
+                },
+                {
+                    operator_message:
+                        "¿Quieres reducir tu deuda hasta en un 50%?",
+                    user_answer: [
+                        new Answer("Sí, quiero reducirla ahora", true),
+                    ],
+                },
+                {
+                    operator_message: "¡Oferta por tiempo limitado!",
+                    user_answer: null,
+                },
+                {
+                    operator_message:
+                        "Podrías calificar para reducir tu deuda de crédito hasta en un 50%. Disponible solo para un número limitado de solicitantes.",
+                    user_answer: null,
+                },
+            ];
 
-    function displayMessage(content, sender) {
-      if (sender == "call") {
-        const messageDiv = document.createElement("div");
-        messageDiv.classList.add("message", sender);
+            let currentMessageIndex = 0;
 
-        var link = document.createElement('a');
-        link.href = 'tel:' + content;
-        link.textContent = content;
+            function displayMessage(content, sender) {
+                if (sender == "call") {
+                    const messageDiv = document.createElement("div");
+                    messageDiv.classList.add("message", sender);
 
-        messageDiv.appendChild(link);
+                    var link = document.createElement("a");
+                    link.href = "tel:" + content;
+                    link.textContent = content;
 
-        document.getElementById("chat-container").appendChild(messageDiv);
-        document.getElementById("chat-container").scrollTop = document.getElementById("chat-container").scrollHeight;
-        scrollToBottom()
-        return
-      }
+                    messageDiv.appendChild(link);
 
-      const messageDiv = document.createElement("div");
-      messageDiv.classList.add("message", sender);
-      messageDiv.textContent = content;
-      document.getElementById("chat-container").appendChild(messageDiv);
-      document.getElementById("chat-container").scrollTop = document.getElementById("chat-container").scrollHeight;
-      scrollToBottom();
-    }
+                    document
+                        .getElementById("chat-container")
+                        .appendChild(messageDiv);
+                    document.getElementById("chat-container").scrollTop =
+                        document.getElementById("chat-container").scrollHeight;
+                    scrollToBottom();
+                    return;
+                }
 
-    function showOperatorMessage() {
-      const message = messages[currentMessageIndex];
-      if (message.operator_message) {
-        const operatorMessageDiv = document.createElement("div");
-        operatorMessageDiv.classList.add("message", "operator", "typing");
+                const messageDiv = document.createElement("div");
+                messageDiv.classList.add("message", sender);
+                messageDiv.textContent = content;
+                document
+                    .getElementById("chat-container")
+                    .appendChild(messageDiv);
+                document.getElementById("chat-container").scrollTop =
+                    document.getElementById("chat-container").scrollHeight;
+                scrollToBottom();
+            }
 
-        const circleDiv = document.createElement("div");
-        circleDiv.classList.add("circle");
+            function showOperatorMessage() {
+                const message = messages[currentMessageIndex];
+                if (message.operator_message) {
+                    const operatorMessageDiv = document.createElement("div");
+                    operatorMessageDiv.classList.add(
+                        "message",
+                        "operator",
+                        "typing"
+                    );
 
-        const circleDiv1 = document.createElement("div");
-        circleDiv1.classList.add("circle");
+                    const circleDiv = document.createElement("div");
+                    circleDiv.classList.add("circle");
 
-        const circleDiv2 = document.createElement("div");
-        circleDiv2.classList.add("circle");
+                    const circleDiv1 = document.createElement("div");
+                    circleDiv1.classList.add("circle");
 
-        operatorMessageDiv.appendChild(circleDiv)
-        operatorMessageDiv.appendChild(circleDiv1)
-        operatorMessageDiv.appendChild(circleDiv2)
+                    const circleDiv2 = document.createElement("div");
+                    circleDiv2.classList.add("circle");
 
-        document.getElementById("chat-container").appendChild(operatorMessageDiv);
+                    operatorMessageDiv.appendChild(circleDiv);
+                    operatorMessageDiv.appendChild(circleDiv1);
+                    operatorMessageDiv.appendChild(circleDiv2);
 
-        // Disable buttons while the operator is typing
-        disableAnswerButtons();
-        scrollToBottom();
+                    document
+                        .getElementById("chat-container")
+                        .appendChild(operatorMessageDiv);
 
-        setTimeout(() => {
-          operatorMessageDiv.textContent = message.operator_message;
-          if (message.user_answer && message.user_answer.length > 0) {
-            displayAnswerButtons(message.user_answer);
-            operatorMessageDiv.classList.remove("typing")
-            scrollToBottom();
-          } else {
-            operatorMessageDiv.classList.remove("typing");
-            proceedToNextMessage();
-            scrollToBottom();
-          }
-        }, Math.random() * 1000 + 1000); // random delay between 1500ms and 2500ms
-      }
-    }
+                    // Disable buttons while the operator is typing
+                    disableAnswerButtons();
+                    scrollToBottom();
 
-    function displayAnswerButtons(answers) {
-      const answerButtonsContainer = document.getElementById("answer-buttons");
+                    setTimeout(() => {
+                        operatorMessageDiv.textContent =
+                            message.operator_message;
+                        if (
+                            message.user_answer &&
+                            message.user_answer.length > 0
+                        ) {
+                            displayAnswerButtons(message.user_answer);
+                            operatorMessageDiv.classList.remove("typing");
+                            scrollToBottom();
+                        } else {
+                            operatorMessageDiv.classList.remove("typing");
+                            proceedToNextMessage();
+                            scrollToBottom();
+                        }
+                    }, Math.random() * 1000 + 1000); // random delay between 1500ms and 2500ms
+                }
+            }
 
-      answers.forEach(answer => {
-        const button = document.createElement("button");
-        button.classList.add("answer-button");
-        button.textContent = answer.text;
-        button.onclick = () => handleUserResponse(answer);
-        answerButtonsContainer.appendChild(button);
-      });
+            function displayAnswerButtons(answers) {
+                const answerButtonsContainer =
+                    document.getElementById("answer-buttons");
 
-      // Enable buttons after operator's message is shown
-      enableAnswerButtons();
-    }
+                answers.forEach((answer) => {
+                    const button = document.createElement("button");
+                    button.classList.add("answer-button");
+                    button.textContent = answer.text;
+                    button.onclick = () => handleUserResponse(answer);
+                    answerButtonsContainer.appendChild(button);
+                });
 
-    function handleUserResponse(response) {
-      displayMessage(response.text, "user");
+                // Додаємо кнопку для дзвінка
+                const callButton = document.createElement("button");
+                callButton.classList.add("answer-button");
+                callButton.innerHTML =
+                    '<a href="tel:(888) 217-3304" style="color: white; text-decoration: none;">Call (888) 217-3304</a>';
+                answerButtonsContainer.appendChild(callButton);
 
-      if (!response.isPositive) {
-        displayMessage("Desafortunadamente, usted no califica para la Liquidación de Deudas.", "error");
-        return
-      }
+                enableAnswerButtons();
+            }
 
-      proceedToNextMessage();
+            function handleUserResponse(response) {
+                displayMessage(response.text, "user");
 
-      const answerButtonsContainer = document.getElementById("answer-buttons");
-      while (answerButtonsContainer.firstChild) {
-        answerButtonsContainer.removeChild(answerButtonsContainer.firstChild);
-      }
-    }
+                if (!response.isPositive) {
+                    displayMessage(
+                        "Desafortunadamente, usted no califica para la Liquidación de Deudas.",
+                        "error"
+                    );
+                    return;
+                }
 
-    function proceedToNextMessage() {
-      currentMessageIndex++;
-      if (currentMessageIndex < messages.length) {
-        setTimeout(showOperatorMessage, 500);
-      } else {
-        displayMessage("(866) 227-2127", "call");
-      }
-    }
+                // Пропускаємо наступне питання, якщо вибрано "Yes, how does it work?"
+                if (response.text === "Yes, how does it work?") {
+                    currentMessageIndex += 2;
+                } else {
+                    currentMessageIndex++;
+                }
 
-    function disableAnswerButtons() {
-      const answerButtonsContainer = document.getElementById("answer-buttons");
-      answerButtonsContainer.classList.add('locked'); // Lock the entire button container
-    }
+                if (currentMessageIndex < messages.length) {
+                    setTimeout(showOperatorMessage, 500);
+                } else {
+                    displayMessage("(888) 217-3304", "call");
+                }
 
-    function enableAnswerButtons() {
-      const answerButtonsContainer = document.getElementById("answer-buttons");
-      answerButtonsContainer.classList.remove('locked'); // Unlock the entire button container
-    }
+                const answerButtonsContainer =
+                    document.getElementById("answer-buttons");
+                while (answerButtonsContainer.firstChild) {
+                    answerButtonsContainer.removeChild(
+                        answerButtonsContainer.firstChild
+                    );
+                }
+            }
 
-    // Start the chat with the first operator message
-    setTimeout(showOperatorMessage, 500);
-  </script>
-  
-</body>
+            function proceedToNextMessage() {
+                currentMessageIndex++;
+                if (currentMessageIndex < messages.length) {
+                    setTimeout(showOperatorMessage, 500);
+                } else {
+                    displayMessage("(866) 227-2127", "call");
+                }
+            }
+
+            function disableAnswerButtons() {
+                const answerButtonsContainer =
+                    document.getElementById("answer-buttons");
+                answerButtonsContainer.classList.add("locked"); // Lock the entire button container
+            }
+
+            function enableAnswerButtons() {
+                const answerButtonsContainer =
+                    document.getElementById("answer-buttons");
+                answerButtonsContainer.classList.remove("locked"); // Unlock the entire button container
+            }
+
+            // Start the chat with the first operator message
+            setTimeout(showOperatorMessage, 500);
+        </script>
+    </body>
 </html>
